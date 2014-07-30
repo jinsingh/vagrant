@@ -2,7 +2,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-require_relative "../vagrant_requires.rb"
+require_relative "vagrant_requires.rb"
 
 Vagrant.configure("2") do |config|
   #Global config
@@ -18,23 +18,22 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider :virtualbox do |vb|
     vb.auto_nat_dns_proxy = false
-    vb.customize ["modifyvm", :id, "--memory", 256, "--ioapic", "on"]
+    #vb.customize ["modifyvm", :id, "--memory", 256, "--ioapic", "on"]
+    vb.customize ["modifyvm", :id, "--memory", 256, "--ioapic", "off"]
     vb.customize ["modifyvm", :id, "--cpus", 1]
     vb.gui = true
   end
 
   #vagrant-vbguest config
   config.vbguest.auto_update = true
-  # Awaiting my fix: https://github.com/dotless-de/vagrant-vbguest/issues/127 - PMS
-  # config.vbguest.dependency_arguments = '--disablerepo=Capd'
 
   #Management server
   config.vm.define "management" do |management|
     management.vm.host_name = 'management.test'
     management.vm.provision :shell, :path => "vagrant.sh"
-    management.vm.network "private_network", ip: "172.16.10.10"
+    management.vm.network "private_network", ip: "172.16.10.2"
     management.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", 512, "--ioapic", "on"]
+      #vb.customize ["modifyvm", :id, "--memory", 512, "--ioapic", "on"]
     end
   end
 
@@ -42,7 +41,8 @@ Vagrant.configure("2") do |config|
   config.vm.define "web" do |web|
     web.vm.host_name = 'web.test'
     web.vm.provision :shell, :path => "vagrant.sh"
-    web.vm.network "private_network", ip: "172.16.10.13"
+    web.vm.network "private_network", ip: "172.16.10.3"
+     #vb.customize ["modifyvm", :id, "--memory", 512, "--ioapic", "on"]
+    end
   end
 
-end
