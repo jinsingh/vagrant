@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+sqlplus -s <%= scope.function_hiera(["capd-oracle-sys-username"]) %>/<%= scope.function_hiera(["capd-oracle-password-system"]) %>@<%= scope.function_hiera(["capd-oracle-sid"]) %> <<EOF
+
+DROP USER <%= scope.function_hiera(["capd-oracle-audit-username"]) %> CASCADE;
+
+CREATE BIGFILE TABLESPACE <%= scope.function_hiera(["capd-oracle-capd-audit-tablespace-name"]) %> DATAFILE
+  '<%= scope.function_hiera(["capd-oracle-capd-audit-tablespace-filename"]) %>' SIZE 1000M AUTOEXTEND ON NEXT 1000M MAXSIZE 100000M
+PERMANENT
+EXTENT MANAGEMENT LOCAL AUTOALLOCATE
+SEGMENT SPACE MANAGEMENT AUTO
+FLASHBACK OFF;
+
+CREATE ROLE <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+
+GRANT CREATE SESSION TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %> ;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."PARTY_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."PARTY_PARTYADDRESS_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."PARTY_PARTYDIGITALCONTACT_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."PARTY_PARTYPHONECONTACT_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."PERSON_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."PARTY_DIGITAL_CONTACT_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."PARTY_ADDRESS_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."PARTY_PHONE_CONTACT_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."ORGANISATION_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."LEGACY_IDENTIFIER_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."INTERNAL_MESSAGE_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+GRANT SELECT ON "<%= scope.function_hiera(["capd-oracle-username"]) %>"."INTERNAL_PERSON_AUD" TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
+
+CREATE USER <%= scope.function_hiera(["capd-oracle-audit-username"]) %> IDENTIFIED BY <%= scope.function_hiera(["capd-oracle-audit-password"]) %> DEFAULT TABLESPACE <%= scope.function_hiera(["capd-oracle-capd-audit-tablespace-name"]) %> TEMPORARY TABLESPACE <%= scope.function_hiera(["capd-oracle-capd-audit-tablespace-temp"]) %>;
+GRANT <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %> TO <%= scope.function_hiera(["capd-oracle-audit-username"]) %>;
+
+quit
+EOF

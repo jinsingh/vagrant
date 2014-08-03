@@ -1,0 +1,74 @@
+/*I recommend you not to insert NULL parameters*/
+DECLARE
+   pva_server_ip         VARCHAR2 (15) := '<%= scope.function_hiera(["capd-ha-virtual-ipaddress"]) %>'; /*pva_server_ip: the IP of the application server;*/
+   pva_server_base_URL   VARCHAR2 (1000) := 'sitiagri.abacogroup.com'; /*the base URL for the SSO (Single Sign On, server application for authentication); if the SSO.war is in the same application server it can be pva_server_base_URL = pva_server_ip;*/
+   pva_log_path          VARCHAR2 (1000 CHAR) := '/var/log/abaco/logs';
+   pva_temp_path         VARCHAR2 (1000 CHAR) := '/tmp/abaco/temp';
+   pva_data_path         VARCHAR2 (1000 CHAR) := '/opt/abaco/data'; /*base file system path where there are other folders containing particular data (e.g.: ortophotos, maps,...)*/
+   pva_alt_RMI_URL       VARCHAR2 (1000 CHAR) := 'http://192.168.10.12:8998/alternativeRMI13/altrmiservlet'; /*address to which is reachable the servlet of the server AlternativeRMI (alternativeRMI.war)*/
+   pva_SMTP_HOST         VARCHAR2 (1000 CHAR) := '192.168.20.5'; /*SMTP host*/
+BEGIN
+
+   /* URLs update */
+   aggiorna_url('192.168.20.22', pva_server_ip);
+
+   /*
+    * SSO_PARAMETERS
+    */
+
+   UPDATE SSO_PARAMETERS
+      SET VALUE = 'http://' || pva_server_base_URL || '/sso'
+    WHERE NAME = '_APPLICATIONURL';
+
+   UPDATE SSO_PARAMETERS
+      SET VALUE = 'http://127.0.0.1/SSO/sso'
+    WHERE NAME = 'SSOSERVER';
+
+   UPDATE SSO_PARAMETERS
+      SET VALUE = 'http://' || pva_server_ip || '/SSO/sso'
+    WHERE NAME = 'SSOSERVER_EXTERNAL';
+
+   /*
+    * GISPARAMS
+    */
+
+   UPDATE GISPARAMS
+      SET VALORE = pva_log_path || '/siticatasto.log'
+    WHERE VARIABILE = 'LOGFILENAME';
+
+   UPDATE GISPARAMS
+      SET VALORE = pva_data_path || '/mappe/'
+    WHERE VARIABILE = 'PATHDWG';
+
+   UPDATE GISPARAMS
+      SET VALORE = pva_data_path || '/foto_campo/'
+    WHERE VARIABILE = 'PATHFOTOCAMPO';
+
+   UPDATE GISPARAMS
+      SET VALORE = pva_data_path || '/sviluppo/frazionamenti/'
+    WHERE VARIABILE = 'PATHFRAZIONAMENTI';
+
+   UPDATE GISPARAMS
+      SET VALORE = pva_data_path || '/mappe/'
+    WHERE VARIABILE = 'PATHMAPPE';
+
+   UPDATE GISPARAMS
+      SET VALORE = pva_data_path || '/mappe/'
+    WHERE VARIABILE = 'PATHTIF';
+
+   UPDATE GISPARAMS
+      SET VALORE = pva_temp_path
+    WHERE VARIABILE = 'UPLOADPATH';
+
+   UPDATE GISPARAMS
+      SET VALORE = pva_alt_RMI_URL
+    WHERE VARIABILE = 'ALTRMIURL';
+
+   UPDATE GISPARAMS
+      SET VALORE = pva_SMTP_HOST
+    WHERE VARIABILE = 'SMTP_HOST';
+
+   COMMIT;
+
+END;
+/

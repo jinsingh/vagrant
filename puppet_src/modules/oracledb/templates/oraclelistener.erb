@@ -1,0 +1,20 @@
+#!bin/bash
+$prog=<%= @oracleHomeDir %>/bin/lsnrctl
+
+case "$1" in
+  start)
+    $prog start
+    ;;
+  stop)
+    $prog stop
+    ;;
+  status)
+    $prog status
+    ;;
+  restart)
+    $prog reload
+    ;;
+  *)
+  echo $"Usage: {start|stop|restart|status}"
+  RETVAL=2
+esac

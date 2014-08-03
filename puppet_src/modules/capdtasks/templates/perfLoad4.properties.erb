@@ -1,0 +1,26 @@
+# Job properties for perf
+
+job.input.directory=/home/deploy/profile-4
+job.input.usersFileName=users.csv
+job.input.personsFileName=persons.csv
+job.input.organisationsFileName=organisations.csv
+job.input.privilegesFileName=privileges.csv
+job.input.legacyIdentifiersFileName=legacyIdentifiers.csv
+job.input.personMatchFileName=personMatch.csv
+job.input.internalUsersPrivilegesFileName=internalUsersPrivileges.csv
+job.input.landLinkFileName=landLinks.csv
+
+job.passcode.dataFileOutputPath=/opt/capdtasks/output/users_performance_out-4.csv
+
+job.passcode.url=https://<%= @webservice_hostname %>/register/{passcode}
+job.passcode.randomSeed=0
+
+job.schema.capd=<%= scope.function_hiera(["capd-oracle-username"]) %>
+job.schema.capdAuth=<%= scope.function_hiera(["capd-oracle-auth-username"]) %>
+
+jdbc.driverClassName=oracle.jdbc.OracleDriver
+jdbc.url=jdbc:oracle:thin:@<%= @caporacledb_ip_host %>:<%= scope.function_hiera(["oracle-port"]) %>:<%= scope.function_hiera(["capd-oracle-sid"]) %>
+jdbc.username=<%= scope.function_hiera(["capd-oracle-sys-username"]) %>
+jdbc.password=<%= scope.function_hiera(["capd-oracle-password-system"]) %>
+
+siti.service.basepath=http://<%= scope.function_hiera(["capapp-ip-host"]) %>:8080

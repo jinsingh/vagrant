@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -xe
+
+export LD_LIBRARY_PATH="/usr/lib/oracle/12.1/client64/lib/:/opt/capd-siti-linux-dataloader/"
+
+./csv2ora -d "//<%= scope.function_hiera(['caporacledb-ip-host']) %>:<%= scope.function_hiera(["oracle-port"]) %>/<%= scope.function_hiera(['capd-oracle-sid']) %>" -u <%= scope.function_hiera(['capd-oracle-username']) %> -p <%= scope.function_hiera(['capd-oracle-capduser-password']) %> -t impo_eng_organizations -l impo_eng_organizations.log -f /tmp/impo_eng_organizations.txt -c impo_eng_organizations.cfg
+

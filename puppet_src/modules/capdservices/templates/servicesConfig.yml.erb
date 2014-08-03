@@ -1,0 +1,116 @@
+database:
+  showSql: false
+  hbm2ddl: validate
+  connectionPool:
+    driverClass: "oracle.jdbc.OracleDriver"
+    jdbcUrl: "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = caporacledb)(PORT = <%= scope.function_hiera(["oracle-port"]) %>))(CONNECT_DATA = (SERVICE_NAME = <%= scope.function_hiera(["capd-oracle-sid"]) %>)))"
+    databaseUsername: <%= scope.function_hiera(["capd-oracle-sys-username"]) %>
+    databasePassword: <%= scope.function_hiera(["capd-oracle-password-system"]) %>
+    maxPoolSize: 20
+    minPoolSize: 5
+    testConnectionOnCheckout: true
+
+http:
+  port: <%= scope.function_hiera(["capd-services-port"]) %>
+  adminPort: <%= scope.function_hiera(["capd-services-admin-port"]) %>
+  requestLog:
+    console:
+      enabled: false
+    file:
+      enabled: true
+      currentLogFilename: /var/log/capd/capdservices.log
+      archivedLogFilenamePattern: /var/log/capd/capdservices-%d.log.zip
+      archivedFileCount: 5
+
+sldStyles:
+  mappingFile: styles.properties
+  styleDir: classpath:/styles/%s
+
+idaAuth:
+  txnIssuerId: "https://<%= @capd_external_web_address %>"
+  matchingIssuerId: "https://<%= @capd_external_web_address %>/msa"
+  appLoginUrl: "https://<%= @capd_external_web_address %>/authentication_endpoint"
+  ssoPostUrl: "<%= @ida_sso_post_url %>"
+  idaUrl: "<%= @ida_url %>"
+  idaPublicKeyCertPath: <%= @capd_ida_cert_path %>
+  appPublicKeyCertPath: <%= @capd_app_cert_path %>
+  signingPrivateKeyPath: <%= @capd_private_signing_key_path  %>
+  encryptionPrivateKeyPath: <%= @capd_private_encryption_key_path  %>
+  restrictAccessBasedOnToken: <%= @ida_restrict_access_based_on_token %>
+  tokenServiceVerifyCertificate: true
+  tokenServiceUrl: "http://<%= @management_ip %>:8111"
+  tokenServiceUsername: DEFRA
+  tokenServicePassword: ab5289a6b3e5421e9eb1a597
+  errorPagePath: "https://<%= @capd_external_web_address %>/start-login"
+  tokenInviteUrl: "https://<%= @capd_external_web_address %>/start-login?token="
+
+idaLinkStore:
+  driverClass: "oracle.jdbc.OracleDriver"
+  connectionString: "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = caporacledb)(PORT = <%= scope.function_hiera(["oracle-port"]) %>))(CONNECT_DATA = (SERVICE_NAME = <%= scope.function_hiera(["capd-oracle-sid"]) %>)))"
+  userName: "<%= @capd_oracle_username %>"
+  password: "<%= @capd_oracle_capduser_password %>"
+  connectionAge: 7200
+  maxPoolSize: 5
+
+idaSecurityStore:
+  driverClass: "oracle.jdbc.OracleDriver"
+  connectionString: "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = caporacledb)(PORT = <%= scope.function_hiera(["oracle-port"]) %>))(CONNECT_DATA = (SERVICE_NAME = <%= scope.function_hiera(["capd-oracle-sid"]) %>)))"
+  userName: <%= scope.function_hiera(["capd-oracle-auth-username"]) %>
+  password: <%= scope.function_hiera(["capd-oracle-auth-username"]) %>
+  connectionAge: 7200
+  maxPoolSize: 5
+
+internalAuth:
+  cookieName: CapdAuthToken
+  cookiePairSeparator: "&"
+  secret: "<%= @capd_auth_secure_auth_token_key %>"
+  timeout: 30000
+
+sitiAgriClient:
+  baseUrl: http://<%= @capd_proxy_ip %>:80
+  healthCheckUri : "/SitiAgriApi/health"
+  callerId: -1
+
+logging:
+  level: INFO
+  loggers:
+    uk.gov.defra: DEBUG
+    org.eclipse.jetty: WARN
+    org.apache.http: WARN
+    com.yammer.metrics: WARN
+  file:
+    enabled: true
+    currentLogFilename: /var/log/capd/capdservices.log
+    archivedLogFilenamePattern: /var/log/capd/capdservices-%d.log.zip
+    archivedFileCount: 5
+  console:
+    enabled: false
+
+featureToggles:
+  enableOrganisationAmend: <%= @enable_organisation_amend %>
+  enableOrganisationCreate: <%= @enable_organisation_create %>
+  enableParcelAdd: <%= @enable_parcel_add %>
+  enableParcelRemove: <%= @enable_parcel_remove %>
+
+microServices:
+  mail:
+    baseUrl: http://<%= scope.function_hiera(["capd-ha-virtual-ipaddress"]) %>:<%= scope.function_hiera(["capd-send-mail-port"]) %>
+    adminUrl: http://<%= scope.function_hiera(["capd-ha-virtual-ipaddress"]) %>:<%= scope.function_hiera(["capd-send-mail-admin-port"]) %>
+email:
+  feedback:
+    from: <%= scope.function_hiera(["capd-services-email-feedback-from"]) %>
+    to: <%= scope.function_hiera(["capd-services-email-feedback-to"]) %>
+  notification:
+    from: noreply@kainos.com
+#user.feedback@capdelivery.gsi.gov.uk
+  token:
+    from: noreply@rpa.gsi.gov.uk
+  allowedDomains: <%= scope.function_hiera(["capd-services-email-allowed-domains"]) %>
+
+internalUserLoad:
+  callerId: <%= scope.function_hiera(["capd-services-internal-callerid"]) %>
+mdmDataLoad:
+  callerId: <%= scope.function_hiera(["capd-services-mdm-callerid"]) %>
+adhocSuperUserId: <%= scope.function_hiera(["capd-services-adhoc-callerid"]) %>
+capServices:
+  callerId: <%= scope.function_hiera(["capd-services-callerid"]) %>

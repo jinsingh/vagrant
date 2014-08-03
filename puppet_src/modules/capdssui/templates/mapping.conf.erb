@@ -1,0 +1,58 @@
+# mapping config
+{
+    # Layer configuration
+    client.map.sopraWmtsUrl="https://<%= scope.function_hiera(['capd-external-web-address'])%>/geoserver/gwc/service/wmts"
+    client.map.sopraWmsUrl="https://<%= scope.function_hiera(['capd-external-web-address'])%>/geoserver/OS/wms"
+
+    #The extent of England as defined in the British National Grid projection
+    # http://spatialreference.org/ref/epsg/27700/
+    client.map.extentOfTheUK=[-102939.64689284, -202405.82895124, 1137403.1062222, 766617.82777766]
+    client.map.projection="EPSG:27700"
+
+    # Temporarily set to Reading for User Story #1093 for OSMaster map
+    client.map.centerEngland=[470719.30120433,169525.4608207]
+    client.map.centerOrganisationParcels=[413390.40522812,111843.78636116]
+
+    client.map.validOSNGLetterCodes=[NT,NU,NW,NX,NY,NZ,OV,SC,SD,SE,TA,SJ,SK,TF,TG,SO,SP,TL,TM,SS,ST,SU,TQ,TR,SV,SW,SX,SY,SZ,TV]
+    client.map.notEnglandOSSheets=[HP,HT,HU,HW,HX,HY,HZ,NA,NB,NC,ND,NF,NG,NH,NJ,NK,NL,NM,NN,NO,NR,NS,SH,SM,SN,SR]
+
+    client.map.scales=[100,250,500,1000,2500,5000,10000,25000,50000,100000,250000,500000,1000000,2500000,5000000]
+
+    client.map.minOSMasterScale=5000000
+    client.map.maxOSMasterScale=100
+    client.map.minAerialScale=5000000
+    client.map.maxAerialScale=100
+    client.map.minPblScale=10000
+    client.map.maxPblScale=100
+    client.map.minParcelIdCentreScale=5000
+    client.map.maxParcelIdCentreScale=100
+    client.map.maxOrganisationPblScale=100
+    client.map.minOrganisationPblScale=10000
+    client.map.maxOrganisationPblClusteredScale=25000
+    client.map.minOrganisationPblClusteredScale=5000000
+    client.map.maxLandChangeRequestScale=100
+    client.map.minLandChangeRequestScale=10000
+    client.map.maxLandCoverScale=100
+    client.map.minLandCoverScale=10000
+    client.map.maxEnglandBoundaryDetailedScale=100
+    client.map.minEnglandBoundaryDetailedScale=250000
+    client.map.maxEnglandBoundarySimpleScale=500000
+    client.map.minEnglandBoundarySimpleScale=5000000
+
+    client.map.AerialIndex=1
+    client.map.OSMasterIndex=2
+    client.map.englandBoundaryZIndex=3
+    client.map.pblZIndex=5
+    client.map.parcelsForBusinessZIndex=6
+    client.map.parcelIdsZIndex=7
+    client.map.featuresZIndex=8
+    client.map.organisationProposalZIndex=200
+
+    # Whilst drawing feature scale warning will appear if user zooms out further then 1:5000
+    client.map.draw.minScaleWarning=9
+    client.map.menu.search.scale=8
+
+    client.map.OSMasterCopyright="© Crown Copyright and database rights ${currentYear}.  Ordnance Survey 100022861."
+    client.map.OSVectorDistrictCopyright="Contains Ordnance Survey data © Crown copyright and database right ${currentYear}."
+    client.map.AerialPhotoCopyright="Copyright Next Perspectives™"
+}

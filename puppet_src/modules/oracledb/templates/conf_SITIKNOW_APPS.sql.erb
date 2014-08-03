@@ -1,0 +1,12 @@
+/*I recommend you not to insert NULL parameters*/
+DECLARE
+   pva_server_ip   VARCHAR2 (15) := '<%= scope.function_hiera(["capd-ha-virtual-ipaddress"]) %>'; /*the IP of the application server*/
+BEGIN
+
+   UPDATE APP_PARAMS
+      SET PARAM_VAL = REPLACE (PARAM_VAL, '192.168.20.22', pva_server_ip)
+    WHERE PARAM_VAL IS NOT NULL AND REPLACE (PARAM_VAL, '192.168.20.22', pva_server_ip) IS NOT NULL;
+
+   COMMIT;
+END;
+/

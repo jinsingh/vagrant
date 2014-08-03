@@ -1,0 +1,3 @@
+job.input.file=data/test.psv
+job.client.internalUserAuthService.url=http://<%= scope.function_hiera(["capd-ha-virtual-ipaddress"]) %>:<%= scope.function_hiera(["capd-services-port"]) %>
+job.client.service.callerid=<%= scope.function_hiera(["capd-services-internal-callerid"]) %>

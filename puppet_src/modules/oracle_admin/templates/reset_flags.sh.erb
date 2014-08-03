@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Script to reset flags in CAPD tables, for running ad-hoc from TeamCity by developers.
+
+sqlplus -s <%= scope.function_hiera(["capd-oracle-sys-username"]) %>/<%= scope.function_hiera(["capd-oracle-password-system"]) %>@<%= scope.function_hiera(["capd-oracle-sid"]) %> <<EOF
+
+BEGIN
+
+ UPDATE CAPD.PERSON SET CONFIRMED=0;
+ UPDATE CAPD.PERSON SET ACCEPTED_TERMS=0;
+ UPDATE CAPD.ORGANISATION SET CONFIRMED=0;
+ UPDATE CAPD.ORGANISATION SET LAND_CONFIRMED=0;
+
+END;
+/
+
+quit
+EOF

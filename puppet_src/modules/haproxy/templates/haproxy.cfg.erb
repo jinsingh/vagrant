@@ -1,0 +1,216 @@
+##
+## HAProxy config file. Managed by puppet.
+##
+
+global
+        maxconn 4096
+        user haproxy
+        group haproxy
+        daemon
+        log 127.0.0.1 local0 debug
+        log-tag HAPROXY
+
+defaults
+        log     global
+        mode    <%= scope.function_hiera(["ha-proxy-mode"]) %>
+        option  httplog
+        option  dontlognull
+        retries 3
+        option redispatch
+        option http-server-close
+        option forwardfor
+        maxconn 2000
+        timeout connect 5s
+        timeout client  15min
+        timeout server  15min
+        <% if @osfamily != "Darwin" %>
+        log-format %hr\ %r\ %ST\ %B\ %Ts\ %Tr
+        <% end %>
+
+# As you can't get here directly, you need an ssh tunnel via the mgmt server
+# ssh capmanagement-{platform} -L 2525:<%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:2525
+# then go to http://127.0.0.1:2525 in your browser
+
+listen stats <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:2525
+    mode http
+    stats enable
+    stats hide-version
+    stats realm Haproxy\ Statistics
+    stats uri /
+    stats auth Admin:Passwrod1
+
+##
+## ACL's Names are case-sensitive
+##
+
+
+##
+## Frontends
+##
+
+frontend gateway
+        # Listen on main IP on a designated por for everything that pops in
+        #
+
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:<%= scope.function_hiera(["ha-gateway-port"]) %>
+
+        # Process incoming requests using following ACL's. They're processed in order, from top to bottom. Default on the bottom.
+        #
+
+        #filter out WMS requests, send to abacodbmap server
+        #
+        acl is_wms path_beg -i /SitiAgriApi/wms-proxy
+
+        # Release environment has no mocks
+
+        # below is forwarding everything (siti agri) not matched before to 'real' sitiagriapi (capapp) (ie. Person/Organisation/Authorisation/Parcel)
+        #
+        acl is_real_sitiagri path_beg -i /SitiAgriApi
+
+        # IDA matching stuff
+        #
+        acl is_ida_matching path_beg -i /ida-matching-service
+
+        # Internal auth
+        #
+        acl is_internal_auth path_beg -i /api/internal-auth/session
+
+        # Validate auth to external bridge
+        #
+        acl is_to_validate path_beg -i /auth/validate /auth/ida/request
+
+        # IDA requests (for now to mockidahub)
+        #
+        acl is_ida path_beg -i /ida
+
+        # Api calls to services #1
+        #
+        acl is_api_user path_beg -i /api/user
+
+        # Default route for all other API calls
+        #
+        acl is_api path_beg -i /api
+
+        # Filter out matching service adapter
+        #
+        acl is_msa path_beg -i /matching-service
+
+        # Filter out mdm-data-load
+        #
+        acl is_mdm_data_load path_beg -i /mdm-data-load
+
+        ## Assign ACLs to backends ##
+        use_backend abacodbmap if is_wms
+        use_backend realsiti if is_real_sitiagri
+        use_backend matching if is_ida_matching
+        use_backend internal_auth if is_internal_auth
+        use_backend services if is_to_validate or is_mdm_data_load
+        use_backend mock_idahub if is_ida
+        use_backend services if is_api_user or is_api
+        use_backend matching_adapter if is_msa
+
+frontend public_user_auth
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:<%= scope.function_hiera(["capd-user-auth-port"]) %>
+        default_backend user_auth
+
+frontend public_services
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:<%= scope.function_hiera(["capd-services-port"]) %>
+        default_backend services
+
+frontend public_internal_auth
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:<%= scope.function_hiera(["capd-auth-port"]) %>
+        default_backend internal_auth
+
+frontend public_matching
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:<%= scope.function_hiera(["capd-matching-port"]) %>
+        default_backend matching
+
+frontend public_matching_adapter
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:<%= scope.function_hiera(["capd-matching-adapter-port"]) %>
+        default_backend matching_adapter
+
+frontend public_real_siti
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:<%= scope.function_hiera(["capd-real-siti-forward-port"]) %>
+        default_backend realsiti
+
+frontend public_abacodbmap
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:8088;
+        default_backend abacodbmap
+
+frontend public_sendmail
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:<%= scope.function_hiera(["capd-send-mail-port"]) %>
+        default_backend sendmail
+
+frontend public_sendmail_admin
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:<%= scope.function_hiera(["capd-send-mail-admin-port"]) %>
+        default_backend sendmail_admin
+
+frontend public_hippo_cms
+        bind <%= scope.function_hiera(["capd-haproxy-bind-ip"]) %>:<%= scope.function_hiera(["capd-hippo-cms-via-haproxy-port"]) %>
+        default_backend hippo_cms
+
+##
+## Backends
+##
+
+backend realsiti
+        option forwardfor
+        server realsiti1 <%= scope.function_hiera(["capapp-ip-host"]) %>:<%= scope.function_hiera(["capd-real-siti-port"]) %> check inter 1000 rise 1 fall 2
+
+backend user_auth
+        option forwardfor
+      <% scope.lookupvar('arrays::servers::capservices_servers').each_with_index do |val, index| -%>
+        server user_auth<%= index + 1 %> <%= val %>:<%= scope.function_hiera(["capd-user-auth-port"]) %> check inter 1000 rise 1 fall 2
+      <% end -%>
+
+backend services
+        option forwardfor
+      <% scope.lookupvar('arrays::servers::capservices_servers').each_with_index do |val, index| -%>
+        server services<%= index + 1 %> <%= val %>:<%= scope.function_hiera(["capd-services-port"]) %> check inter 1000 rise 1 fall 2
+      <% end -%>
+
+backend internal_auth
+        option forwardfor
+      <% scope.lookupvar('arrays::servers::capservices_servers').each_with_index do |val, index| -%>
+        server internal_auth<%= index + 1 %> <%= val %>:<%= scope.function_hiera(["capd-auth-port"]) %> check inter 1000 rise 1 fall 2
+      <% end -%>
+
+backend matching
+        option forwardfor
+      <% scope.lookupvar('arrays::servers::capservices_servers').each_with_index do |val, index| -%>
+        server matching<%= index + 1 %> <%= val %>:<%= scope.function_hiera(["capd-matching-port"]) %> check inter 1000 rise 1 fall 2
+      <% end -%>
+
+backend matching_adapter
+        option forwardfor
+      <% scope.lookupvar('arrays::servers::capservices_servers').each_with_index do |val, index| -%>
+        server matching_adapter<%= index + 1 %> <%= val %>:<%= scope.function_hiera(["capd-matching-adapter-port"]) %> check inter 1000 rise 1 fall 2
+      <% end -%>
+
+backend abacodbmap
+        option forwardfor
+        timeout connect 20000
+        reqrep ^([^\ :]*)\ /SitiAgriApi/wms-proxy/(.*)     \1\ /\2
+        server abacodbmap1linux <%= scope.function_hiera(["capdbmaplinux-ip-host"]) %>:<%= scope.function_hiera(["capd-abacodbmap-port"]) %> check inter 1000 rise 1 fall 2
+
+backend mock_idahub
+        option forwardfor
+        server mock_idahub1 <%= scope.function_hiera(["capweb-ip-host"]) %>:<%= scope.function_hiera(["capd-mock-ida-hub-port"]) %> check inter 1000 rise 1 fall 2
+
+backend sendmail
+        option forwardfor
+      <% scope.lookupvar('arrays::servers::capservices_servers').each_with_index do |val, index| -%>
+        server sendmail<%= index + 1 %> <%= val %>:<%= scope.function_hiera(["capd-send-mail-port"]) %> check inter 1000 rise 1 fall 2
+      <% end -%>
+
+backend sendmail_admin
+        option forwardfor
+      <% scope.lookupvar('arrays::servers::capservices_servers').each_with_index do |val, index| -%>
+        server sendmail_admin<%= index + 1 %> <%= val %>:<%= scope.function_hiera(["capd-send-mail-admin-port"]) %> check inter 1000 rise 1 fall 2
+      <% end -%>
+
+backend hippo_cms
+        option forwardfor
+      <% scope.lookupvar('arrays::servers::caphippo_cms_servers').each_with_index do |val, index| -%>
+        server hippo_cms<%= index + 1 %> <%= val %>:<%= scope.function_hiera(["hippo-cms-direct-port"]) %> check inter 1000 rise 1 fall 2
+      <% end -%>

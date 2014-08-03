@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+sqlplus -s <%= @capd_oracle_sys_username %>/<%= @capd_oracle_password_system %>@<%= @capd_oracle_auth_sid %> as sysdba <<EOF
+
+alter system flush shared_pool;
+
+EOF

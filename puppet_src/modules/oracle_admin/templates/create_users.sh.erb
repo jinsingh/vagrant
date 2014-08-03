@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+sqlplus -s <%= scope.function_hiera(["capd-oracle-sys-username"]) %>/<%= scope.function_hiera(["capd-oracle-password-system"]) %>@<%= scope.function_hiera(["capd-oracle-sid"]) %> <<EOF
+
+CREATE BIGFILE TABLESPACE <%= scope.function_hiera(["capd-oracle-capd-tablespace-name"]) %> DATAFILE
+  '<%= scope.function_hiera(["capd-oracle-capd-tablespace-filename"]) %>' SIZE 1000M AUTOEXTEND ON NEXT 1000M MAXSIZE 50000M
+PERMANENT
+EXTENT MANAGEMENT LOCAL AUTOALLOCATE
+SEGMENT SPACE MANAGEMENT AUTO
+FLASHBACK OFF;
+
+CREATE BIGFILE TABLESPACE <%= scope.function_hiera(["capd-oracle-capd-auth-tablespace-name"]) %> DATAFILE
+  '<%= scope.function_hiera(["capd-oracle-capd-auth-tablespace-filename"]) %>' SIZE 1000M AUTOEXTEND ON NEXT 1000M MAXSIZE 50000M
+PERMANENT
+EXTENT MANAGEMENT LOCAL AUTOALLOCATE
+SEGMENT SPACE MANAGEMENT AUTO
+FLASHBACK OFF;
+
+CREATE ROLE <%= scope.function_hiera(["capd-oracle-capd-standard-role-name"]) %>;
+
+GRANT CREATE SEQUENCE TO <%= scope.function_hiera(["capd-oracle-capd-standard-role-name"]) %> ;
+GRANT CREATE TABLE TO <%= scope.function_hiera(["capd-oracle-capd-standard-role-name"]) %> ;
+GRANT CREATE OPERATOR TO <%= scope.function_hiera(["capd-oracle-capd-standard-role-name"]) %> ;
+GRANT CREATE PROCEDURE TO <%= scope.function_hiera(["capd-oracle-capd-standard-role-name"]) %> ;
+GRANT CREATE TYPE TO <%= scope.function_hiera(["capd-oracle-capd-standard-role-name"]) %> ;
+GRANT CREATE INDEXTYPE TO <%= scope.function_hiera(["capd-oracle-capd-standard-role-name"]) %> ;
+GRANT CREATE VIEW TO <%= scope.function_hiera(["capd-oracle-capd-standard-role-name"]) %>;
+
+CREATE USER <%= scope.function_hiera(["capd-oracle-username"]) %> IDENTIFIED BY <%= scope.function_hiera(["capd-oracle-capduser-password"]) %> DEFAULT TABLESPACE <%= scope.function_hiera(["capd-oracle-capd-tablespace-name"]) %> TEMPORARY TABLESPACE <%= scope.function_hiera(["capd-oracle-capd-tablespace-temp"]) %>;
+GRANT CONNECT, <%= scope.function_hiera(["capd-oracle-capd-standard-role-name"]) %> TO <%= scope.function_hiera(["capd-oracle-username"]) %>;
+GRANT UNLIMITED TABLESPACE TO <%= scope.function_hiera(["capd-oracle-username"]) %>;
+CREATE USER <%= scope.function_hiera(["capd-oracle-auth-username"]) %> IDENTIFIED BY <%= scope.function_hiera(["capd-oracle-authuser-password"]) %> DEFAULT TABLESPACE <%= scope.function_hiera(["capd-oracle-capd-auth-tablespace-name"]) %> TEMPORARY TABLESPACE <%= scope.function_hiera(["capd-oracle-capd-auth-tablespace-temp"]) %>;
+GRANT CONNECT, <%= scope.function_hiera(["capd-oracle-capd-standard-role-name"]) %> TO <%= scope.function_hiera(["capd-oracle-auth-username"]) %>;
+GRANT UNLIMITED TABLESPACE TO <%= scope.function_hiera(["capd-oracle-auth-username"]) %>;
+quit
+EOF

@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cloudmenu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="menu.xsd" hideDisabled="true" hideFooter="true">
+  <caption>Siti Agri - DEFRA Development Environment</caption>
+  <imageUrl>images_sitiagri/logo_abaco.gif</imageUrl>
+  <childs type="BUTTONS">
+  <!--
+    <element id="M001">
+      <caption>Messages</caption>
+      <caption lang="it">Messaggi</caption>
+      <imageUrl>images_sitiagri/message_new.png</imageUrl>
+      <childs type="BUTTONS">
+        <element id="M002">
+          <caption>User Messages</caption>
+          <caption lang="it">Messaggi utente</caption>
+          <imageUrl>images_sitiagri/message_empty.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/msgCodaUtenteListLoad.do</url>
+        </element>
+        <element id="M003">
+          <caption>System Messages</caption>
+          <caption lang="it">Messaggi di sistema</caption>
+          <imageUrl>images_sitiagri/message_new.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/msgCodaSistemaListLoad.do?viewmode=modify</url>
+        </element>
+        <element id="M004">
+          <caption>Compose messages</caption>
+          <caption lang="it">Componi messaggi</caption>
+          <imageUrl>images_sitiagri/compose_messages.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/msgMessaggioList.do</url>
+        </element>
+      </childs>
+    </element>
+    -->
+    <element id="M051">
+      <caption>IACS</caption>
+      <caption lang="it">IACS</caption>
+      <imageUrl>images_sitiagri/iacs.png</imageUrl>
+      <childs type="BUTTONS">
+        <element  ssoFunctions="FASCICOLO|FASAMM,FASCICOLO|FASGES,FASCICOLO|FASVIS,FASCICOLO|FASVAL" id="M005">
+          <caption>Dossier</caption>
+          <caption lang="it">Dossier</caption>
+          <imageUrl>images_sitiagri/dossier.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/fascicolo/ricercaPrepareFascicolo.do</url>
+        </element>
+        <element ssoFunctions="CONSISTENZA|SR_CONS_A,CONSISTENZA|SR_CONS_U,CONSISTENZA|SR_CONS_V" id="M006">
+          <caption>Customer Register</caption>
+          <caption lang="it">Anagrafica soggetti</caption>
+          <imageUrl>images_sitiagri/register.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/siticatasto/sv.actions?action=SV.soggetto&amp;subAction=prepareFrameset</url>
+        </element>
+        <element id="M053">
+          <caption>LPIS</caption>
+          <caption lang="it">LPIS</caption>
+          <imageUrl>images_sitiagri/LPIS.png</imageUrl>
+          <childs type="BUTTONS">
+            <element ssoFunctions="CONSISTENZA|SR_CONS_A,CONSISTENZA|SR_CONS_U,CONSISTENZA|SR_CONS_V" id="M007">
+              <caption>LPIS Portal</caption>
+              <caption lang="it">Portale LPIS</caption>
+              <imageUrl>images_sitiagri/lpis_browser.png</imageUrl>
+              <url>*http://<%= @capd_capapp_ip %>/siticatasto/</url>
+            </element>
+            <element ssoFunctions="CONSISTENZA|SR_CONS_A,CONSISTENZA|SR_CONS_U,CONSISTENZA|SR_CONS_V" id="M008">
+              <caption>2D Explorer</caption>
+              <caption lang="it">Visualizzatore 2D</caption>
+              <imageUrl>images_sitiagri/2d_viewer.png</imageUrl>
+              <url target="IFRAME">*http://<%= @capd_capapp_ip %>/siticatasto/sv.actions?action=monitorgis&amp;subAction=main</url>
+            </element >
+            <element ssoFunctions="CONSISTENZA|SR_CONS_A,CONSISTENZA|SR_CONS_U" id="M009">
+              <caption>3D Explorer</caption>
+              <caption lang="it">Visualizzatore 3D</caption>
+              <imageUrl>images_sitiagri/3d_viewer.png</imageUrl>
+              <url target="IFRAME">*http://<%= @capd_capapp_ip %>/siti-viewer-3d</url>
+            </element>
+            <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M010">
+              <caption>LPIS quality control</caption>
+              <caption lang="it">Monitor qualit?? LPIS</caption>
+              <imageUrl>images_sitiagri/lpis_qc.png</imageUrl>
+              <url target="IFRAME">*http://<%= @capd_capapp_ip %>/siticatasto/siti.actions?action=monitorQual&amp;subAction=main</url>
+            </element>
+            <element ssoFunctions="SITICLOUD|ADMIN,SITICLOUD|DATALOAD,SITICLOUD|VIEWCADAST" id="M011">
+              <caption>Cloud</caption>
+              <caption lang="it">Cloud</caption>
+              <imageUrl>images_sitiagri/cloud.png</imageUrl>
+              <url>*http://<%= @capd_capapp_ip %>/siticloud/</url>
+            </element>
+          </childs>
+        </element>
+        <element ssoFunctions="DOMANDE|DOMAMM,DOMANDE|DOMGES,DOMANDE|DOMVIS" id="M012">
+          <caption>Applications</caption>
+          <caption lang="it">Domande</caption>
+          <imageUrl>images_sitiagri/applications.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/domande/domDomandaList.do</url>
+        </element>
+        <element ssoFunctions="TITOLI|TITAMM,TITOLI|TITGES,TITOLI|TITVIS" id="M013">
+          <caption>Entitlements Register</caption>
+          <caption lang="it">Registro Titoli</caption>
+          <imageUrl>images_sitiagri/entitlement.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/titoli/titoloResetListLoad.do?tab=2</url>
+        </element>
+        <!--
+        <element ssoFunctions="FASCICOLO|FASAMM,FASCICOLO|FASGES" id="M014">
+          <caption>Appointments</caption>
+          <caption lang="it">Appuntamenti</caption>
+          <imageUrl>images_sitiagri/appointment.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/schede/convocazioneResetList.do?DT_RIFERIMENTO=&amp;viewmode=modify</url>
+        </element>
+        -->
+        <element ssoFunctions="FASCICOLO|FASMAN" id="M015">
+          <caption>Authorization</caption>
+          <caption lang="it">Mandati</caption>
+          <imageUrl>images_sitiagri/contract.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/consCuaaEnteList.do?modalita=mandato&amp;gestione=S</url>
+        </element>
+        <element ssoFunctions="FASCICOLO|FASAMM,FASCICOLO|FASGES,FASCICOLO|FASVIS" id="M016">
+          <caption>Proxies</caption>
+          <caption lang="it">Deleghe</caption>
+          <imageUrl>images_sitiagri/contract.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/consCuaaEnteList.do?modalita=delega&amp;gestione=S</url>
+        </element>
+          <element ssoFunctions="GRADUATORIA|GRAVIS,GRADUATORIA|GRAMOD,GRADUATORIA|GRAAMM" id="M017">
+          <caption>Ranking</caption>
+          <caption lang="it">Graduatorie</caption>
+          <imageUrl>images_sitiagri/ranking.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/graduatoria/gradGraduatoriaList.do</url>
+        </element>
+        <element id="M018">
+          <caption>Controls</caption>
+          <caption lang="it">Controlli</caption>
+          <imageUrl>images_sitiagri/control_system.png</imageUrl>
+          <childs type="BUTTONS">
+            <element ssoFunctions="CONTROLLI|CTRLAMM,CONTROLLI|CTRLGES,CONTROLLI|CTRLVIS" id="M019">
+              <caption>Control System</caption>
+              <caption lang="it">Sistema di Controllo</caption>
+              <imageUrl>images_sitiagri/control_system.png</imageUrl>
+              <url target="IFRAME">*http://<%= @capd_capapp_ip %>/SITIControlli/xts/elencoSettori.action</url>
+            </element>
+            <!--
+            <element ssoFunctions="CONTROLLI|CTRLAMM,CONTROLLI|CTRLGES,CONTROLLI|CTRLVIS" id="M020">
+              <caption>Farm controls</caption>
+              <caption lang="it">Back Office Aziendale</caption>
+              <imageUrl>images_sitiagri/control_system.png</imageUrl>
+              <url target="IFRAME">*http://<%= @capd_capapp_ip %>/portale-bo-azie/ma.actions?subAction=prepareFrameset&amp;action=soggetto</url>
+            </element>
+            -->
+            <element ssoFunctions="ESTRAZ|ESTRADMIN,ESTRAZ|ESTRDEFINITIVA" id="M021">
+              <caption>Extractions</caption>
+              <caption lang="it">Estrazioni</caption>
+              <imageUrl>images_sitiagri/extractions.png</imageUrl>
+              <url target="IFRAME">*http://<%= @capd_capapp_ip %>/estrazione/estrEstrazioneResetListLoad.do</url>
+            </element>
+          </childs>
+        </element>
+        <element ssoFunctions="DOMANDE|ELCGES,DOMANDE|ELCVIS" id="M022">
+          <caption>Payments</caption>
+          <caption lang="it">Pagamenti</caption>
+          <imageUrl>images_sitiagri/payments.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/domande/selSelezioneListLoad.do?DT_RIFERIMENTO=</url>
+        </element>
+        <element ssoFunctions="DOMANDE|CONAMM,DOMANDE|CONGES,DOMANDE|CONVIS" id="M023">
+          <caption>Contracts</caption>
+          <caption lang="it">Contratti</caption>
+          <imageUrl>images_sitiagri/contract_2.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/domande/conContrattoRicercaList.do?DT_RIFERIMENTO=</url>
+        </element>
+        <!--
+        <element ssoFunctions="VITIVINICOLO|VITGESREG" id="M024">
+          <caption>Vineyard register</caption>
+          <caption lang="it">Schedario viticolo</caption>
+          <imageUrl>images_sitiagri/grape.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/domande/conContrattoRicercaList.do?DT_RIFERIMENTO=</url>
+        </element>
+        -->
+      </childs>
+    </element>
+    <element ssoFunctions="PAMS|PAMMOD,PAMS|PAMAMM,PAMS|PAMVIS" id="M070">
+      <caption>PAMS</caption>
+      <caption lang="it">PAMS</caption>
+      <imageUrl>images_sitiagri/pams.png</imageUrl>
+      <url>*http://<%= @capd_capapp_ip %>/pams/pamsMenu.do</url>
+    </element>
+    <element id="M025">
+      <caption>Administration &amp; Configuration</caption>
+      <caption lang="it">Amministrazione e Configurazione</caption>
+      <imageUrl>images_sitiagri/settings.png</imageUrl>
+      <childs type="BUTTONS">
+        <element id="M026">
+          <caption>IACS Settings</caption>
+          <caption lang="it">Impostazioni IACS</caption>
+          <imageUrl>images_sitiagri/iacs.png</imageUrl>
+        <childs type="LIST">
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M027">
+            <caption>Dossier manager</caption>
+            <caption lang="it">Gestione dossier</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/modelloList.do</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M028">
+            <caption>Applications manager</caption>
+            <caption lang="it">Gestione domande</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/domande/domModuloListLoad.do?ID_WIZARD=DOM_MODULI&amp;WIZ_LAYOUT=button</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M029">
+            <caption>Decoding management</caption>
+            <caption lang="it">Configurazione decodifiche</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/decodificaList.do</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M030">
+            <caption>Widgets management</caption>
+            <caption lang="it">Gestione widget</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/widgetList.do</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M031">
+            <caption>Parameters management</caption>
+            <caption lang="it">Gestione parametri</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/parametroListLoad.do</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M032">
+            <caption>Machine types management</caption>
+            <caption lang="it">Gestione tipi di macchina</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/tipoMacchinaList.do</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M033">
+            <caption>Labels management</caption>
+            <caption lang="it">Gestione etichette UMA</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/etichetteUmaList.do</url>
+          </element>
+          <!--
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M034">
+            <caption>Office meetings calendar</caption>
+            <caption lang="it">Gestione orari uffici</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/enteRicevimentoListLoad.do</url>
+          </element>
+          -->
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M035">
+            <caption>Extraction Criteria</caption>
+            <caption lang="it">Criteri di estrazione</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/estrazione/estrCriteriListLoad.do</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M036">
+            <caption>Extraction Constraints</caption>
+            <caption lang="it">Vincoli di estrazione</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/estrazione/estrVincoliListLoad.do</url>
+          </element>
+        </childs>
+        </element>
+
+        <element ssoFunctions="SSO|SSOMANAGER" id="M037">
+          <caption>Users &amp; Authorisations Management</caption>
+          <caption lang="it">Gestione utenti e autorizzazioni</caption>
+          <imageUrl>images_sitiagri/user_admin.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/SSO/ssoadmin2/SSOPages.jsp?SHOWHEADER=N</url>
+        </element>
+        <element ssoFunctions="FASCICOLO|FASAMM" id="M038">
+          <caption>Batch jobs</caption>
+          <caption lang="it">Processi</caption>
+          <imageUrl>images_sitiagri/processes.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/prcRegistroListLoad.do?SCO_STATO_PROCESSO=ESECUZ</url>
+        </element>
+        <element id="M039">
+          <caption>Service Management</caption>
+          <caption lang="it">Gestione dei servizi</caption>
+          <imageUrl>images_sitiagri/service_settings.png</imageUrl>
+        <childs type="LIST">
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M040">
+            <caption>Documents management</caption>
+            <caption lang="it">Gestione documentazione</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/helpDocumentoList.do</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M041">
+            <caption>Processes management</caption>
+            <caption lang="it">Gestione Processi</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/prcRegistroListLoad.do?SCO_STATO_PROCESSO=ESECUZ</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M042">
+            <caption>File manager</caption>
+            <caption lang="it">Gestione Atti e Documenti</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/sitifile/sitiadmin?action=ActType.list</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M052">
+            <caption>Report manager</caption>
+            <caption lang="it">Report manager</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/siti-reports/</url>
+          </element>
+          <element ssoFunctions="KNOWLEDGE_BI|ADMIN_METADATA" id="M043">
+            <caption>Knowledge manager</caption>
+            <caption lang="it">Knowledge manager</caption>
+            <url>*http://<%= @capd_capapp_ip %>/siti-knowledge-metadata/</url>
+          </element>
+          <element ssoFunctions="SERVIZI|RUEAMM" id="M060">
+            <caption>Rule Engine configuration</caption>
+            <caption lang="it">Configurazione del Rule Engine</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/rueDefRuleLibListLoad.do</url>
+          </element>
+        </childs>
+        </element>
+      </childs>
+    </element>
+    <element id="M044">
+      <caption>Monitoring &amp; Reporting</caption>
+      <caption lang="it">Monitor &amp; Report</caption>
+      <imageUrl>images_sitiagri/report.png</imageUrl>
+      <childs type="BUTTONS">
+        <element ssoFunctions="FASCICOLO|FASAMM,FASCICOLO|FASGES" id="M045">
+          <caption>Prints</caption>
+          <caption lang="it">Stampe</caption>
+          <imageUrl>images_sitiagri/print_job.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/stampaLogDetailInsert.do</url>
+        </element>
+        <element ssoFunctions="DOMANDE|DOMAMM" id="M046">
+          <caption>Application report</caption>
+          <caption lang="it">Report Domande</caption>
+          <imageUrl>images_sitiagri/report.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/domande/reportResetListLoad.do?DT_RIFERIMENTO=</url>
+        </element>
+        <element ssoFunctions="SERVIZI|SCHADMIN" id="M047">
+          <caption>Dashboard</caption>
+          <caption lang="it">Dashboard</caption>
+          <imageUrl>images_sitiagri/dashboard.png</imageUrl>
+          <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/dashboard.do</url>
+        </element>
+        <element ssoFunctions="KNOWLEDGE_BI|WRITE,KNOWLEDGE_BI|ADMIN_METADATA,KNOWLEDGE_BI|WRITE_PUBLIC,KNOWLEDGE_BI|CREATE_NEW" id="M048">
+          <caption>Knowledge B.I.&amp;L</caption>
+          <caption lang="it">Knowledge B.I.&amp;L</caption>
+          <imageUrl>images_sitiagri/siti_knowledge.png</imageUrl>
+          <url>*http://<%= @capd_capapp_ip %>/siti-knowledge</url>
+        </element>
+      </childs>
+    </element>
+    <element ssoFunctions="CONSISTENZA|SR_CONS_A" id="M049">
+      <caption>SITI Farmer</caption>
+      <caption lang="it">SITI Farmer</caption>
+      <imageUrl>images_sitiagri/siti_farmer.png</imageUrl>
+      <url>*http://<%= @capd_capapp_ip %>/siti-farmer/</url>
+    </element>
+    <element ssoFunctions="FASCICOLO|FASAMM,FASCICOLO|FASGES,FASCICOLO|FASVIS,FASCICOLO|FASVAL,CONSISTENZA|SR_CONS_A,CONSISTENZA|SR_CONS_U,CONSISTENZA|SR_CONS_V" id="M050">
+      <caption>Documentation &amp; Manuals</caption>
+      <caption lang="it">Documentazione e Manuali</caption>
+      <imageUrl>images_sitiagri/documents.png</imageUrl>
+      <url target="IFRAME">*http://<%= @capd_capapp_ip %>/servizi/helpViewerListLoad.do</url>
+    </element>
+    <element ssoFunctions="FASCICOLO|FASAMM,FASCICOLO|FASGES,FASCICOLO|FASVIS,FASCICOLO|FASVAL,CONSISTENZA|SR_CONS_A,CONSISTENZA|SR_CONS_U,CONSISTENZA|SR_CONS_V" id="M054">
+      <caption>Downloads</caption>
+      <caption lang="it">Downloads</caption>
+      <imageUrl>images_sitiagri/downloads.png</imageUrl>
+      <childs type="LIST">
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A,CONSISTENZA|SR_CONS_U,CONSISTENZA|SR_CONS_V" id="M055">
+            <caption>SITI Index</caption>
+            <caption lang="it">SITI Index</caption>
+            <url target="IFRAME">*http://62.149.204.209/sitiindex_uk/siti_index_uk.zip</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A,CONSISTENZA|SR_CONS_U,CONSISTENZA|SR_CONS_V" id="M056">
+            <caption>DbMAP ASJ</caption>
+            <caption lang="it">DbMAP ASJ</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/downloads/DbMAP_ASJ/dbmap_asj_setup.exe</url>
+          </element>
+          <element ssoFunctions="CONSISTENZA|SR_CONS_A,CONSISTENZA|SR_CONS_U,CONSISTENZA|SR_CONS_V" id="M057">
+            <caption>DbMAP 3D Builder</caption>
+            <caption lang="it">DbMAP 3D Builder</caption>
+            <url target="IFRAME">*http://<%= @capd_capapp_ip %>/downloads/DbMAP_3D_Builder/dbmap3dbuilder_2017b02_setup.exe</url>
+          </element>
+      </childs>
+    </element>
+  </childs>
+</cloudmenu>

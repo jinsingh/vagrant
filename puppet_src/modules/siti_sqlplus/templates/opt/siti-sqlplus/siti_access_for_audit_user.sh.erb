@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -xe
+
+# Grant select privilege on SITI.* database tables to users in the Audit role:
+
+cd /opt/siti-sqlplus/auth
+sqlplus <%= scope.function_hiera(["capd-oracle-sys-username"]) %>/<%= scope.function_hiera(["capd-oracle-password-system"]) %>@<%= scope.function_hiera(["capd-oracle-sid"]) %> @08_SITI_AUDIT_SELECT.sql
+

@@ -1,0 +1,233 @@
+/*I recommend you not to insert NULL parameters*/
+
+DECLARE
+   pva_server_ip         VARCHAR2 (15 CHAR)   := '<%= scope.function_hiera(["capd-ha-virtual-ipaddress"]) %>'; /*the IP of the application server*/
+   pva_DWG_path          VARCHAR2 (1000 CHAR) := 'D:/data/mappe/'; /*file system path used to store maps;*/
+   pva_print_path        VARCHAR2 (1000 CHAR) := 'D:/abaco/data/stampe'; /*file system path used to store prints;*/
+   pva_log_path          VARCHAR2 (1000 CHAR) := '/var/log/abaco/logs'; /* system path to the log files;*/
+   pva_msg_smtp_server   VARCHAR2 (1000 CHAR) := 'smtp.hopesolutions.it'; /*an SMTP server*/
+   pva_msg_smtp_password VARCHAR2 (1000 CHAR) := 'info';
+   pva_msg_smtp_username VARCHAR2 (1000 CHAR) := 'info@abacogroup.eu';
+   pva_process_fide_from VARCHAR2 (1000 CHAR) := 'support-noreply@malta.gov'; /*a particular mail address, not used for now*/
+   pva_process_fide_to   VARCHAR2 (1000 CHAR) := 'info@abacogroup.eu'; /*a particular mail address, not used for now*/
+   pva_url_riepilogo     VARCHAR2 (1000 CHAR) := 'sitiagri.abacogroup.com'; /*URL for some summary pages; usually equals to pva_server_ip*/
+BEGIN
+
+   /* URLs update */
+   aggiorna_url('192.168.20.22', pva_server_ip);
+
+   /*
+    * TPARAMETRO
+    */
+
+   -- DELETE OF ALL THE PARAMETERS TO BE RECONFIGURED
+   DELETE TPARAMETRO
+    WHERE CHIAVE IN
+             ('DbMAP_ASJ.PATHDWG',
+              'flusso.path',
+              'generic.file.path',
+              'help.path',
+              'LOGFILENAME',
+              'messaggi.path',
+              'stampe.path',
+              'msg.server.smtp',
+              'msg.server.smtp.password',
+              'msg.server.smtp.username',
+              'process.fide.from',
+              'process.fide.to',
+              'process.path'
+             );
+
+   -- INSERT FOR ALL THE PARAMETERS TO BE RECONFIGURED
+   BEGIN
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('DbMAP_ASJ.PATHDWG', pva_DWG_path, 'Percorso file DWG', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('flusso.path', pva_print_path || '/fascicolo/flussi/', 'VISUALIZZAZIONE COD_DOMANDA', 'APPLIC', 'PAMS',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('generic.file.path', pva_print_path || '/fascicolo/stampe/', 'PATH CONTENENTE I FILE CARICATI', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('help.path', pva_print_path || '/fascicolo/stampe/', 'PATH CONTENENTE LE STAMPE RICHIESTE IN FASCICOLO', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/domande.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'DOMAND',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/commitments.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'COMMIT',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/estrazione.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'ESTRAZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/schede.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'SCHEDE',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/servizi.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/fideiussioni.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'POLIZZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/graduatoria.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'GRADUA',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/pams.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'PAMS',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/titoli.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'TITOLI',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/fascicolo.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'FASCIC',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('LOGFILENAME', pva_log_path || '/programma.html', 'FILE DI LOG APPLICATIVO', 'APPLIC', 'PROGRA',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('messaggi.path', pva_print_path || '/fascicolo/stampe/', 'PATH CONTENENTE LE STAMPE RICHIESTE IN FASCICOLO', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('stampe.path', pva_print_path || '/fascicolo/stampe/', 'PATH CONTENENTE LE STAMPE RICHIESTE IN FASCICOLO', 'APPLIC', 'ESTRAZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('stampe.path', pva_print_path || '/fascicolo/stampe/', 'PATH CONTENENTE LE STAMPE RICHIESTE IN FASCICOLO', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('stampe.path', pva_print_path || '/fascicolo/stampe/', 'PATH CONTENENTE LE STAMPE RICHIESTE IN FASCICOLO', 'APPLIC', 'SCHEDE',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('process.path', pva_print_path || '/fascicolo/stampe/', 'PATH CONTENENTE LE STAMPE RICHIESTE IN FASCICOLO', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('msg.server.smtp', pva_msg_smtp_server, 'SERVER SMTP PER POSTA IN USCITA', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('msg.server.smtp.password', pva_msg_smtp_password, 'PASSWORD PER POSTA IN USCITA', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('msg.server.smtp.username', pva_msg_smtp_username, 'NOME UTENTE PER POSTA IN USCITA', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('process.fide.from', pva_process_fide_from, 'EXPIRED GUARANTEES PROCESS - SENDER EMAIL', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+      Insert into FASCICOLO.TPARAMETRO
+         (CHIAVE, VALORE, DE_PARAMETRO, COD_APPLICAZIONE, SCO_APPLICAZIONE,
+          COD_TIPO_DATO, SCO_TIPO_DATO)
+       Values
+         ('process.fide.to', pva_process_fide_to, 'EXPIRED GUARANTEES PROCESS - DESTINATION EMAIL', 'APPLIC', 'SERVIZ',
+          'TIPDAT', 'STRING');
+   END;
+
+
+   /*
+    * TSCHEDA_RIEPILOGO
+    */
+   DELETE TSCHEDA_RIEPILOGO
+   WHERE ID_SCHEDA in ('SOCIO', 'VIN_UV', 'VIN_ATTITUDINE', 'VIN_DIRITTO', 'VIN_RIVENDICA', 'EXP_REGISTRO_PRC');
+
+   BEGIN
+
+      Insert into TSCHEDA_RIEPILOGO
+         (ID_RIEPILOGO, ID_SCHEDA, URL, EXAMPLE_URL)
+       Values
+         (38, 'VIN_UV', 'schedaRiepilogo.do?azione=' || chr(38) || 'url=http%3A%2F%2F' || pva_url_riepilogo || '%2Fschede%2FunitaVitateRiepilogo.do%3FID_SOGGETTO%3D%7Bid_soggetto%7D%26DT_RIFERIMENTO%3D%7Bdt_riferimento%7D', NULL);
+      Insert into TSCHEDA_RIEPILOGO
+         (ID_RIEPILOGO, ID_SCHEDA, URL, EXAMPLE_URL)
+       Values
+         (39, 'VIN_DIRITTO', 'schedaRiepilogo.do?azione=' || chr(38) || 'url=http%3A%2F%2F' || pva_url_riepilogo || '%2Fschede%2FvinDirittoRiepilogo.do%3FID_SOGGETTO%3D%7Bid_soggetto%7D%26DT_RIFERIMENTO%3D%7Bdt_riferimento%7D', NULL);
+      Insert into TSCHEDA_RIEPILOGO
+         (ID_RIEPILOGO, ID_SCHEDA, URL, EXAMPLE_URL)
+       Values
+         (40, 'VIN_RIVENDICA', 'schedaRiepilogo.do?azione=' || chr(38) || 'url=http%3A%2F%2F' || pva_url_riepilogo || '%2Fschede%2FvinRivendicaRiepilogo.do%3FID_SOGGETTO%3D%7Bid_soggetto%7D%26DT_RIFERIMENTO%3D%7Bdt_riferimento%7D', NULL);
+      Insert into TSCHEDA_RIEPILOGO
+         (ID_RIEPILOGO, ID_SCHEDA, URL, EXAMPLE_URL)
+       Values
+         (41, 'VIN_ATTITUDINE', 'schedaRiepilogo.do?azione=' || chr(38) || 'url=http%3A%2F%2F' || pva_url_riepilogo || '%2Fschede%2FvinAttitudineRiepilogo.do%3FID_SOGGETTO%3D%7Bid_soggetto%7D%26DT_RIFERIMENTO%3D%7Bdt_riferimento%7D', NULL);
+      Insert into TSCHEDA_RIEPILOGO
+         (ID_RIEPILOGO, ID_SCHEDA, URL, EXAMPLE_URL)
+       Values
+         (42, 'EXP_REGISTRO_PRC', 'schedaRiepilogo.do?azione=' || chr(38) || 'url=http%3A%2F%2F' || pva_url_riepilogo || '%2Fservizi%2FexpRegistroPrcSummary.do%3FID_SOGGETTO%3D%7Bid_soggetto%7D%26FG_ULTIMO%3DS', NULL);
+      Insert into TSCHEDA_RIEPILOGO
+         (ID_RIEPILOGO, ID_SCHEDA, URL, EXAMPLE_URL)
+       Values
+         (43, 'SOCIO', 'schedaRiepilogo.do?azione=' || chr(38) || 'url=http%3A%2F%2F' || pva_url_riepilogo || '%2Fschede%2FsocioRiepilogo.do%3FID_SOGGETTO%3D%7Bid_soggetto%7D%26DT_RIFERIMENTO%3D%7Bdt_riferimento%7D', NULL);
+   END;
+
+   COMMIT;
+
+END;
+/

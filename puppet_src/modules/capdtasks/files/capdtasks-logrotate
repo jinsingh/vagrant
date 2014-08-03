@@ -1,0 +1,5 @@
+/var/log/capd/capdtasks.log {
+    weekly
+    notifempty
+    create 640 root root
+}

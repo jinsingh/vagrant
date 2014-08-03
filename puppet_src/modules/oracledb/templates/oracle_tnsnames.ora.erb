@@ -1,0 +1,9 @@
+CAPD =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = <%= scope.function_hiera(["caporacledb-hostname"]) %>)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = capd)
+    )
+  )
+

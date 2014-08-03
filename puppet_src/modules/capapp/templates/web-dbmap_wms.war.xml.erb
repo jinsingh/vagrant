@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+
+  <servlet>
+    <servlet-name>managementservlet</servlet-name>
+    <servlet-class>DbMAP_WMS_servlet.management.ManagementServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>wms_agri_view_part</servlet-name>
+    <description>DbMAP WMS servlet</description>
+    <servlet-class>DbMAP_WMS_servlet.extra.WMS_servlet_Ex</servlet-class>
+    <init-param>
+      <param-name>LayerXML</param-name>
+      <param-value>http://localhost/siticatasto/actionsNoSSO/SVP.dbmapNoSSO/getWmsProject</param-value>
+    </init-param>
+    <init-param>
+      <param-name>dynamicLayerConfiguration</param-name>
+      <param-value>true</param-value>
+      </init-param>
+    <init-param>
+      <param-name>SRS</param-name>
+      <param-value>none</param-value>
+    </init-param>
+    <init-param>
+      <param-name>direct</param-name>
+      <param-value>Y</param-value>
+    </init-param>
+    <init-param>
+      <param-name>jpgQuality</param-name>
+      <param-value>0.9</param-value>
+    </init-param>
+    <init-param>
+      <param-name>infoTemplate</param-name>
+      <param-value>/DbMAP_WMS_info_template.txt</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ecwBackColor</param-name>
+      <param-value>255 255 255</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionURL</param-name>
+      <param-value>jdbc:oracle:thin:@<%= @capd_oracle_ip %>:<%= scope.function_hiera(["oracle-port"]) %>/<%= @capd_oracle_sid %></param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionUsername</param-name>
+      <param-value>siti</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionPassword</param-name>
+      <param-value>siti_pwd</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionDriver</param-name>
+      <param-value>oracle.jdbc.OracleDriver</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ecwPath</param-name>
+      <param-value></param-value>
+    </init-param>
+    <init-param>
+      <param-name>RmiEcwUrl</param-name>
+      <param-value></param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>wms_agri_view_azie</servlet-name>
+    <description>DbMAP WMS servlet</description>
+    <servlet-class>DbMAP_WMS_servlet.extra.WMS_servlet_Ex</servlet-class>
+    <init-param>
+      <param-name>LayerXML</param-name>
+      <param-value>http://localhost/siticatasto/actionsNoSSO/SV.dbmapNoSSO/getWmsProject</param-value>
+    </init-param>
+    <init-param>
+      <param-name>dynamicLayerConfiguration</param-name>
+      <param-value>true</param-value>
+      </init-param>
+    <init-param>
+      <param-name>SRS</param-name>
+      <param-value>none</param-value>
+    </init-param>
+    <init-param>
+      <param-name>direct</param-name>
+      <param-value>Y</param-value>
+    </init-param>
+    <init-param>
+      <param-name>jpgQuality</param-name>
+      <param-value>0.9</param-value>
+    </init-param>
+    <init-param>
+      <param-name>infoTemplate</param-name>
+      <param-value>/DbMAP_WMS_info_template.txt</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ecwBackColor</param-name>
+      <param-value>255 255 255</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionURL</param-name>
+      <param-value>jdbc:oracle:thin:@<%= @capd_oracle_ip %>:<%= scope.function_hiera(["oracle-port"]) %>/<%= @capd_oracle_sid %></param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionUsername</param-name>
+      <param-value>siti</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionPassword</param-name>
+      <param-value>siti_pwd</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionDriver</param-name>
+      <param-value>oracle.jdbc.OracleDriver</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ecwPath</param-name>
+      <param-value></param-value>
+    </init-param>
+    <init-param>
+      <param-name>RmiEcwUrl</param-name>
+      <param-value></param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>sc_system</servlet-name>
+    <description>DbMAP WMS servlet</description>
+    <servlet-class>DbMAP_WMS_servlet.extra.WMS_servlet_Ex</servlet-class>
+    <init-param>
+      <param-name>LayerXML</param-name>
+      <param-value>http://localhost/siticloud/wmsproject_defra.jsp</param-value>
+    </init-param>
+    <init-param>
+      <param-name>dynamicLayerConfiguration</param-name>
+      <param-value>false</param-value>
+      </init-param>
+    <init-param>
+      <param-name>SRS</param-name>
+      <param-value>none</param-value>
+    </init-param>
+    <init-param>
+      <param-name>direct</param-name>
+      <param-value>Y</param-value>
+    </init-param>
+    <init-param>
+      <param-name>jpgQuality</param-name>
+      <param-value>0.9</param-value>
+    </init-param>
+    <init-param>
+      <param-name>infoTemplate</param-name>
+      <param-value>/DbMAP_WMS_info_template.txt</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ecwBackColor</param-name>
+      <param-value>255 255 255</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionURL</param-name>
+      <param-value>jdbc:oracle:thin:@<%= @capd_oracle_ip %>:<%= scope.function_hiera(["oracle-port"]) %>/<%= @capd_oracle_sid %></param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionUsername</param-name>
+      <param-value>siti</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionPassword</param-name>
+      <param-value>siti_pwd</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionDriver</param-name>
+      <param-value>oracle.jdbc.OracleDriver</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ecwPath</param-name>
+      <param-value></param-value>
+    </init-param>
+    <init-param>
+      <param-name>RmiEcwUrl</param-name>
+      <param-value></param-value>
+    </init-param>
+  </servlet>
+
+
+  <servlet-mapping>
+     <servlet-name>managementservlet</servlet-name>
+     <url-pattern>/admin/DbMAPManagement</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>wms_agri_view_part</servlet-name>
+    <url-pattern>/wms-agri-view-part/WMSservlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>wms_agri_view_azie</servlet-name>
+    <url-pattern>/wms-agri-view-azie/WMSservlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>sc_system</servlet-name>
+    <url-pattern>/sc_system/WMSservlet</url-pattern>
+  </servlet-mapping>
+</web-app>

@@ -25,6 +25,8 @@ resolvConfFix()
   echo nameserver 8.8.8.8 > /etc/resolv.conf
 }
 
+
+
 setupyaml()
 {
 if [ -f '/etc/hiera/eyaml' ]; then
@@ -41,9 +43,9 @@ if [ "$HOSTNAME" = web.test ]; then
   cp /capd-ops/vagrant_dev/keystore/capd.test.key /etc/pki/tls/private/capd.test.key
 fi
 
-resolvConfFix
+#resolvConfFix
 #setupyaml
-bootstrapDependancies
+#bootstrapDependancies
 
 #puppet apply $PUPPET_OPTS /etc/puppet/manifests/vagrant.pp
 #yum makecache

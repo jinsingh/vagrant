@@ -1,0 +1,91 @@
+local common = require 'lua_scripts/common'
+
+ngx.log(ngx.NOTICE, 'BEGIN auth_content.lua')
+
+ngx.req.read_body()
+
+local req_body_data = ngx.req.get_body_data()
+local req_headers =  ngx.req.get_headers()
+local req_method = ngx.req.get_method()
+
+function get_ngx_method (method_string)
+	ngx.log(ngx.NOTICE, 'Using  ' .. method_string .. ' to authenticate')
+	if req_body_data ~= nil then
+		ngx.log(ngx.NOTICE, 'Calling authentication_endpoint with the body: ' .. req_body_data)
+	end
+
+	if method_string == 'POST' then
+		return ngx.HTTP_POST
+	elseif method_string == 'GET' then
+		return ngx.HTTP_GET
+	else
+		ngx.log(ngx.ERR, 'Attempt to use unsupported HTTP method ('.. method_string ..') to authenticate. Aborting')
+
+        ngx.header["X-Frame-Options"] = 'sameorigin'
+        ngx.header["X-XSS-Protection"] = '1'
+        ngx.header["X-Content-Type-Options"] = 'nosniff'
+
+		ngx.exit(401)
+		return;
+	end
+end
+
+-- Clearing header to avoid getting gzipped content from server
+ngx.req.clear_header('Accept-Encoding')
+ngx.req.clear_header('RedirectLocation')
+-- Note that subrequests issued by ngx.location.capture inherit all the request headers of the current request by default and that this may have unexpected side effects on the subrequest responses
+local auth_bridge_res = ngx.location.capture('/auth/validate', { method = get_ngx_method(req_method), always_forward_body = true  })
+
+if auth_bridge_res.header["RedirectLocation"] ~= nil then
+    return ngx.redirect(auth_bridge_res.header["RedirectLocation"])
+end
+
+if auth_bridge_res.status ~= ngx.HTTP_OK then
+  ngx.log(ngx.WARN, 'Auth-bridge rejected authentication attempt. Forbidding access. Status :' .. auth_bridge_res.status)
+
+  ngx.header["X-Frame-Options"] = 'sameorigin'
+  ngx.header["X-XSS-Protection"] = '1'
+  ngx.header["X-Content-Type-Options"] = 'nosniff'
+
+  ngx.exit(401)
+end
+
+local user_context = common.user_context_from_body(auth_bridge_res.body)
+
+ngx.log(ngx.NOTICE, 'callerId returned by auth-bridge is: ' .. user_context.caller_id .. ' user_type is: ' .. user_context.user_type .. ' sessionType is: ' .. user_context.sessionType)
+
+ngx.req.clear_header('content-type')
+ngx.header["content-type"] = 'text/plain'
+
+local h = ngx.req.get_headers()
+    for k, v in pairs(h) do
+        ngx.log(ngx.ERR,'key ' .. k .. ' v '.. v)
+    end
+
+local token_creation_res = ngx.location.capture('/api/internal-auth/session', {method = ngx.HTTP_POST, body = common.body_from_user_context(user_context)})
+ngx.log(ngx.ERR, 'Passing in ' .. common.body_from_user_context(user_context))
+if token_creation_res.status ~= ngx.HTTP_OK then
+	ngx.log(ngx.ERR, 'Failed to acquire new session token from internal-auth')
+
+    ngx.header["X-Frame-Options"] = 'sameorigin'
+    ngx.header["X-XSS-Protection"] = '1'
+    ngx.header["X-Content-Type-Options"] = 'nosniff'
+
+	ngx.exit(500)
+end
+
+local auth_token = token_creation_res.body;
+ngx.log(ngx.NOTICE, 'Got auth token from internal-auth: ' .. auth_token)
+
+
+ngx.header["Set-Cookie"] = "CapdAccessToken=" .. auth_token .. "; path=/; Secure;"
+
+ngx.log(ngx.INFO, 'Redirecting to account url')
+
+if user_context.sessionType == 'IDA' then
+  return ngx.redirect('<%= scope.function_hiera(['nginx-http','https'])%>://<%= scope.function_hiera(['capd-external-web-address'])%>/#/ida-welcome')
+elseif user_context.sessionType == 'NoMatchContextSwitch' then
+  return ngx.redirect('<%= scope.function_hiera(['nginx-http','https'])%>://<%= scope.function_hiera(['capd-external-web-address'])%>/#/my-account?just-registered=1')
+else
+  return ngx.redirect('<%= scope.function_hiera(['nginx-http','https'])%>://<%= scope.function_hiera(['capd-external-web-address'])%>/authorisationLandingPage')
+end

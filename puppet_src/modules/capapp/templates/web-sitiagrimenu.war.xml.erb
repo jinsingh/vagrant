@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+  <context-param>
+    <param-name>CONTESTO_FUNZIONE_ADMIN</param-name>
+    <param-value>PORTALE|PORAMM</param-value>
+  </context-param>
+
+  <!-- Filtro SSO -->
+  <filter>
+  <filter-name>accesscontrol</filter-name>
+  <filter-class>com.abacogroup.sso.client.SSOFilter</filter-class>
+  <init-param>
+    <param-name>configClass</param-name>
+    <param-value>com.abaco.splibrary.server.sso.SSOConfiguration</param-value>
+  </init-param>
+  <init-param>
+    <param-name>context</param-name>
+    <param-value>PORTALE</param-value>
+  </init-param>
+  <init-param>
+    <param-name>ssoserver_baseurl_external</param-name>
+    <param-value>http://<%= @capd_capapp_ip %>/SSO</param-value>
+  </init-param>
+    <init-param>
+    <param-name>ssoserver_baseurl</param-name>
+    <param-value>http://127.0.0.1/SSO</param-value>
+  </init-param>
+  <!--
+    application_url: can also be set to the base url of the curren
+    application (for reverse proxy)
+  -->
+  <!--
+    ssoserver_baseurl_external: can also be set when sso has a different
+    url from client
+  -->
+  </filter>
+
+  <!-- Filtro SSO mappatura -->
+  <filter-mapping>
+  <filter-name>accesscontrol</filter-name>
+  <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- Servlets -->
+  <listener>
+  <listener-class>
+    org.springframework.web.context.ContextLoaderListener
+  </listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>CloudMenuService</servlet-name>
+    <servlet-class>com.abaco.siti.cloudmenu.server.rpc.CloudMenuServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>DownloadServlet</servlet-name>
+    <servlet-class>com.abaco.siti.cloudmenu.server.DownloadServlet</servlet-class>
+  </servlet>
+  <servlet>
+  <servlet-name>FileUploadServlet</servlet-name>
+  <servlet-class>com.abaco.splibrary.server.upload.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet>
+  <servlet-name>SsoService</servlet-name>
+  <servlet-class>com.abaco.gwt.splibrary.server.sso.SsoServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>CloudMenuService</servlet-name>
+    <url-pattern>/siticloudmenu/CloudMenuService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DownloadServlet</servlet-name>
+    <url-pattern>/siticloudmenu/DownloadServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  <servlet-name>FileUploadServlet</servlet-name>
+  <url-pattern>/SpLibrary/FileUploadServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  <servlet-name>SsoService</servlet-name>
+  <url-pattern>/siticloudmenu/SsoService</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>SitiCloudMenu.jsp</welcome-file>
+  </welcome-file-list>
+
+</web-app>

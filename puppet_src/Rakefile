@@ -1,0 +1,104 @@
+require 'highline/import'
+require 'ruby-progressbar'
+require 'puppet'
+require 'puppet-lint'
+require 'parallel_tests'
+require 'parallel_tests/cli'
+require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
+require 'puppet-syntax/tasks/puppet-syntax'
+
+PuppetLint.configuration.with_filename = true
+PuppetLint.configuration.fail_on_warnings = true
+PuppetLint.configuration.send("disable_autoloader_layout")
+PuppetLint.configuration.send("disable_80chars")
+PuppetLint.configuration.send("disable_class_inherits_from_params_class")
+
+HERE = File.expand_path(File.dirname(__FILE__))
+desc "Run puppet-lint"
+task :lint do
+  PuppetLint.configuration.with_filename = true
+  PuppetLint.configuration.fail_on_warnings = true
+  PuppetLint.configuration.send("disable_autoloader_layout") unless ENV['LINT_AUTOLAYOUT']
+  PuppetLint.configuration.send("disable_80chars") unless ENV['ENABLE_80CHARS']
+
+  say "Running lint checks"
+
+  linter = PuppetLint.new
+
+  # Don't lint external modules
+  puppet_file_list = FileList['**/*.pp'].exclude(/oracledb\/manifests\/config/).
+    exclude(/modules\/mysql/).exclude(/modules\/graphite/).
+    exclude(/modules\/collectd/).
+    exclude(/modules\/rsyslog/).exclude(/modules\/ntp\//).
+    exclude(/modules\/kibana/).exclude(/modules\/elasticsearch/).
+    exclude(/modules\/concat/).exclude(/modules\/keepalived/).
+    exclude(/modules\/haproxy/).exclude(/modules\/opsview\//)
+
+  puppet_file_list.each do |puppet_file|
+    linter.file = puppet_file
+    linter.run
+  end
+
+  fail "Lint Errors Found!" if linter.errors? || linter.warnings?
+  say 'Lint checks complete'
+end
+
+desc "Run rspec parralel"
+task :parralel_spec do
+  @here = File.expand_path(File.dirname(__FILE__))
+
+  @hiera_yaml = File.join(@here, 'spec_hiera.yaml')
+
+  unless File.exist?(@hiera_yaml)
+
+    FileUtils.cp(File.join(@here,'hiera.yaml'),@hiera_yaml)
+
+    yamlContent = File.read(@hiera_yaml)
+
+    yamlReplacementContent = yamlContent.gsub(/\/etc\/puppet\//,"#{@here}/")
+    # #Remove the eyaml stuff
+    yamlReplacementContent = yamlReplacementContent.gsub(/- eyaml/,'')
+    yamlReplacementContent = yamlReplacementContent.gsub(/:eyaml:/,'')
+    yamlReplacementContent = yamlReplacementContent.gsub(/\s\s:pkcs7_private_key: \/etc\/hiera\/eyaml\/ci_private_key.pem/,'')
+    yamlReplacementContent = yamlReplacementContent.gsub(/\s\s:pkcs7_public_key: \/etc\/hiera\/eyaml\/ci_public_key.pem/,'')
+    yamlReplacementContent = yamlReplacementContent.gsub(/\/etc\/puppet\//,"#{@here}/")
+    yamlReplacementContent = yamlReplacementContent.gsub(/hieradata/,"hieradata_spec/")
+    yamlReplacementContent = yamlReplacementContent.gsub(/common/,"spec_common")
+
+    File.open(@hiera_yaml, "w") {|file| file.puts yamlReplacementContent}
+  end
+
+  # Don't run specs for external modules
+  matched_files = FileList['modules/**/*_spec.rb']
+
+  cli_args = ['-t', 'rspec']
+  cli_args.concat(matched_files)
+
+  $stderr.puts '---> Running puppet specs (Parallel)'
+  ParallelTest::CLI.run(cli_args)
+  $stderr.puts '---> Puppet specs complete'
+
+  FileUtils.rm(@hiera_yaml) if File.exist?(@hiera_yaml)
+end
+
+desc "Run rspec non-parralel"
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.rspec_opts = ['--color']
+  no_coverage_spec = FileList['**/*_spec.rb'].exclude('coverage/coverage_spec.rb')
+  t.pattern = no_coverage_spec
+end
+
+desc "Show a percentage coverage "
+RSpec::Core::RakeTask.new(:spec_coverage) do |t|
+  t.rspec_opts = ['--color']
+  t.pattern = '**/*_spec.rb'
+end
+
+desc 'Run RuboCop on the spec files'
+Rubocop::RakeTask.new(:rubocop) do |task|
+  task.patterns = ['**/*_spec.rb']
+  task.fail_on_error = false
+end
+
+task :default => [ :syntax, :lint, :spec ]

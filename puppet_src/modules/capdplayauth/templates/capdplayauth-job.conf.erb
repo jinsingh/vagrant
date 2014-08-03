@@ -1,0 +1,19 @@
+<%
+  config_file_lcation = '/opt/capd-playauth/etc/capdplayauth.conf'
+%>
+
+description "Capd Play Auth module"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+respawn
+respawn limit 3 20
+
+pre-start script
+  # stop job if config doesn't exist
+  [ ! -f <%= config_file_lcation %>  ] && { echo No config found at <%= config_file_lcation %>; stop; exit 0; }
+  exit 0
+end script
+
+exec /opt/capd-playauth/start -Djsse.enableSNIExtension=false -Dconfig.file=<%= config_file_lcation %> -Dpidfile.path=/dev/null -Dhttp.port=<%= @capd_play_auth_port %> 2>&1 | logger -t CAPDPLAYAUTH -p daemon.info

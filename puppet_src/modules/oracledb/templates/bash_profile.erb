@@ -1,0 +1,12 @@
+LD_LIBRARY_PATH=<%= @oracleHomeDir %>/lib
+ORACLE_BASE=<%= @oracleBaseDir %>
+ORACLE_HOME=<%= @oracleHomeDir %>
+PATH=$PATH:/usr/local/bin:<%= @oracleHomeDir %>/bin
+SQLPATH=<%= @oracleHomeDir %>/sqlplus/admin
+
+
+export LD_LIBRARY_PATH
+export ORACLE_BASE
+export ORACLE_HOME
+export PATH
+export SQLPATH

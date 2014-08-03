@@ -1,0 +1,19 @@
+<%
+  config_file_lcation = '/opt/capd-mocks-play-ida-hub/etc/capdmockidahub.conf'
+%>
+
+description "Capd Mock IDA Hub module"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+respawn
+respawn limit 3 20
+
+pre-start script
+  # stop job if config doesn't exist
+  [ ! -f <%= config_file_lcation %>  ] && { echo No config found at <%= config_file_lcation %>; stop; exit 0; }
+  exit 0
+end script
+
+exec /opt/capd-mocks-play-ida-hub/start -Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8002 -javaagent:/opt/seeker/seekerHelper.jar -Djsse.enableSNIExtension=false -Dconfig.file=<%= config_file_lcation %> -Dpidfile.path=/dev/null -Dhttp.port=<%= @capd_mock_ida_hub_port %> 2>&1 | logger -t CAPDMOCKIDAHUB -p daemon.info

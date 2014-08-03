@@ -1,0 +1,10 @@
+[General]
+store=sitiknow_apps
+port=<%= scope.function_hiera(["capd-abacodbmap-port"]) %>
+baseURL=http://<%= scope.function_hiera(["capdbmaplinux-ip-host"]) %>/wms-proxy
+logToFile=Y
+logURI=N
+#workers=100
+#runAs=gis
+workDir=/opt/siti-dbmapwms/work
+#forcedOracleClient=C:\\capd\\wms-server\\instantclient_11_2

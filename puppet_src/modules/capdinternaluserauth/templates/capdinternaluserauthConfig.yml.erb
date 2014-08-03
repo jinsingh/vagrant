@@ -1,0 +1,41 @@
+database:
+  showSql: true
+  hbm2ddl: validate
+  hostname: <%= scope.function_hiera(["caporacledb-hostname"]) %>
+  port: <%= scope.function_hiera(["oracle-port"]) %>
+  username: <%= scope.function_hiera(["capd-oracle-auth-username"]) %>
+  password: <%= scope.function_hiera(["capd-oracle-authuser-password"]) %>
+  name: <%= scope.function_hiera(["capd-oracle-sid"]) %>
+  sid: <%= scope.function_hiera(["capd-oracle-sid"]) %>
+
+http:
+  port:      <%= scope.function_hiera(["capd-user-auth-port"]) %>
+  adminPort: <%= scope.function_hiera(["capd-user-auth-admin-port"]) %>
+
+internalUserLoad:
+  callerId: <%= scope.function_hiera(["capd-services-internal-callerid"]) %>
+
+microServices:
+  mail:
+    baseUrl: http://<%= scope.function_hiera(["capd-ha-virtual-ipaddress"]) %>:<%= scope.function_hiera(["capd-send-mail-port"]) %>
+email:
+  capdUrl: https://<%= scope.function_hiera(["capd-external-web-address"]) %>
+  activation:
+    from:
+  passwordReset:
+    from:
+  reactivation:
+    from:
+    
+service:
+  apiUrl: http://<%= scope.function_hiera(["capd-ha-virtual-ipaddress"]) %>:<%= scope.function_hiera(["capd-services-port"]) %>
+  callerId: <%= scope.function_hiera(["capd-services-internal-callerid"]) %>
+
+login:
+  passwordExpirationTimeInDays: 90
+  maxFailedLoginAttempts: 5
+
+token:
+  passwordResetExpirationTimeInMinutes: 20
+  reactivatingUserExpirationTimeInMinutes: 4320
+

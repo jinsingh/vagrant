@@ -1,0 +1,52 @@
+.phase-tag
+{
+	display: block;
+	float: left;
+	color: #fff;
+	font-family: "nta", Arial, sans-serif;
+	font-size: 16px;
+	font-size: 1.6rem;
+	line-height: 1.25;
+	font-weight: 300;
+	text-transform: none;
+	font-weight: 700;
+	line-height: 20px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	text-decoration: none;
+	margin: 3px 10px 0 0;
+	padding: 2px 5px 0;
+}
+ @media (max-width: 640px) {
+
+.phase-tag
+{
+	font-size: 1.4rem;
+	line-height: 1.14286;
+}
+}
+
+
+#phase-notice p
+{
+	padding: 8px 22px;
+	max-width: 940px;
+	margin: 0 auto;
+	background: #D53880;
+}
+
+#phase-notice a
+{
+	color: #0b0c0c;
+	text-decoration:underline;
+}
+
+#phase-notice a:hover
+{
+	text-decoration:none;
+}
+
+#phase-notice strong
+{
+	text-transform: uppercase;
+}

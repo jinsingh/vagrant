@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+sqlplus -s <%= @capd_oracle_sys_username %>/<%= @capd_oracle_password_system %>@<%= @capd_oracle_auth_sid %> <<EOF
+
+DROP USER SITI CASCADE;
+
+DROP USER SITIKNOW CASCADE;
+
+DROP USER SITIKNOW_APPS CASCADE;
+
+DROP USER FASCICOLO CASCADE;
+
+DROP USER PAMS CASCADE;
+
+DROP USER DYLA CASCADE;
+
+DROP ROLE SITI_READ_ONLY_ROLE;
+
+DROP USER siti_audit CASCADE;
+
+DROP USER SITIIMPO CASCADE;
+
+drop tablespace SITI_TBL including contents and datafiles cascade constraints;
+
+drop tablespace FASCICOLO_TBL including contents and datafiles cascade constraints;
+
+drop tablespace SITIKNOW_TBL including contents and datafiles cascade constraints;
+
+drop tablespace DYLA_TBL including contents and datafiles cascade constraints;
+
+drop tablespace PAMS_TBL including contents and datafiles cascade constraints;
+
+drop tablespace SITIIMPO_TBL including contents and datafiles cascade constraints;
+
+quit
+
+EOF

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- DB SVILUPPO (DEFRA) -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@<%= scope.function_hiera(["caporacledb-hostname"]) %>:<%= scope.function_hiera(["oracle-port"]) %>:<%= @capd_oracle_sid %>" />
+		<property name="username" value="siti" />
+		<property name="password" value="<%= @abaco_db_siti_password %>" /> 
+		<property name="minIdle" value="1" />
+		<property name="maxIdle" value="5" />
+		<property name="maxActive" value="10" />
+		<property name="validationQuery" value="SELECT 1 FROM DUAL" />
+		<property name="testOnReturn" value="true" />
+		<property name="testOnBorrow" value="true" />
+	</bean>
+
+	
+
+	<bean id="nativeJdbcExtractor" class="org.springframework.jdbc.support.nativejdbc.CommonsDbcpNativeJdbcExtractor"/>
+
+	<bean id="databaseDialect" class="com.abacogroup.commons.persistence.dialectImpl.OracleDialect">
+		<property name="nativeJdbcExtractor" ref="nativeJdbcExtractor" />
+	</bean>
+
+	<bean id="sequenceService"
+		class="com.abacogroup.commons.persistence.sequenceImpl.OracleSequence">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="transactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="configurationService"
+		class="com.abacogroup.commons.config.impl.DatabaseConfigurationService">
+		<property name="dataSource" ref="dataSource" />
+		<property name="tableName" value="GISPARAMS" />
+	</bean>
+
+	<bean id="cloudDynamicXmlProvider"
+		class="com.abaco.siti.cloudshared.server.CloudDynamicXmlProvider">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="dynamicRegistry"
+		class="com.abacogroup.commons.persistence.spring.DynamicPersistenceServiceRegistry">
+		<property name="dataSource" ref="dataSource" />
+		<property name="xmlProvider" ref="cloudDynamicXmlProvider" />
+		<property name="configurationService" ref="configurationService" />
+		<property name="compilationForced" value="true" />
+		<property name="configurationResources">
+			<list>
+				<!-- <value>com/abaco/gwt/splibrary/server/dynamic-definition.xml</value>  -->
+				<!-- <value>com/abaco/gwt/splibrary/server/dynamic-definition-objselection.xml</value> -->
+				<!-- <value>com/abaco/gwt/splibrary/server/dynamic-definition-projects.xml</value> -->
+				<value>com/abaco/siti/catastocloud/server/dynamic-definition-cloudgis.xml</value>
+				<value>com/abaco/siti/catastocloud/server/dynamic-definition-cloud.xml</value>
+				<value>com/abaco/siti/catastocloud/server/dynamic-definition-catalog.xml</value>
+				<value>com/abaco/siti/cloudmenu/server/dynamic-definition-menu.xml</value>
+				<value>com/abaco/siti/civici/server/dynamic-definition-civici.xml</value>
+				<value>com/abaco/siti/cloudadmin/server/dynamic-definition-admin.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dynamicPersistenceServiceTarget"
+		class="com.abacogroup.commons.persistence.spring.ClassPathDynamicPersistenceService">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configurationService" ref="configurationService" />
+		<property name="sequenceService" ref="sequenceService" />
+		<property name="registry" ref="dynamicRegistry" />
+		<property name="databaseDialect" ref="databaseDialect" />
+	</bean>
+
+	<bean id="dynamicPersistenceService"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target"
+			ref="dynamicPersistenceServiceTarget" />
+		<property name="proxyInterfaces"
+			value="com.abacogroup.commons.persistence.DynamicPersistenceService" />
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+	<!-- START: SEZIONE DEDICATA A SITIFILE - PER PLANIMETRIE -->
+
+	<bean id="attachmentRepositoryService" class="com.abacogroup.siti.fileserver.impl.FileRepositoryServiceFactory">
+		<property name="configurationService" ref="configurationService" />
+		<property name="directoryPathProperty" value="PATHFRAZIONAMENTI" />
+		<property name="filterStreamProvider" ref="zipFilterStreamProvider" />
+		<property name="sequenceService" ref="sequenceService" />
+		<property name="legacyNamesSupport" value="true" />
+	</bean>
+    <bean id="zipFilterStreamProvider" class="com.abacogroup.siti.fileserver.impl.ZIPFilterStreamProvider">
+    </bean>
+	
+	<!-- END:   SEZIONE DEDICATA A SITIFILE - PER PLANIMETRIE -->
+</beans>

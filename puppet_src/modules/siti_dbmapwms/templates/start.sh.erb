@@ -1,0 +1,14 @@
+#!/bin/sh
+
+pushd `dirname $0` > /dev/null
+MY_DIR=`pwd -P`
+popd > /dev/null
+
+export DISPLAY=:<%= @display_number %>
+export LD_LIBRARY_PATH=/usr/lib/oracle/12.1/client64/lib/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MY_DIR
+
+rm -rf $MY_DIR/work
+mkdir $MY_DIR/work
+
+$MY_DIR/dbmap_wms_c

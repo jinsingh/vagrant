@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+cd /opt/siti-sqlplus/shp
+sqlplus siti/<%= @abaco_db_siti_password %>@<%= @capd_oracle_auth_sid %> @run_shp.sql
+cd /opt/siti-sqlplus/auth
+sqlplus siti/<%= @abaco_db_siti_password %>@<%= @capd_oracle_auth_sid %> @run_auth.sql
+cd /opt/siti-sqlplus/cases
+sqlplus fascicolo/fascicolo_pwd@<%= @capd_oracle_auth_sid %> @run_case_fascicolo.sql
+sqlplus siti/<%= @abaco_db_siti_password %>@<%= @capd_oracle_auth_sid %> @run_case_siti.sql
+cd /opt/siti-sqlplus/land
+sqlplus siti/<%= @abaco_db_siti_password %>@<%= @capd_oracle_auth_sid %> @run_land.sql
+
+/opt/siti-sqlplus/add_siti_superuser.sh
+/opt/siti-sqlplus/siti_access_for_audit_user.sh
+/opt/siti-sqlplus/capd_access_for_audit_user.sh

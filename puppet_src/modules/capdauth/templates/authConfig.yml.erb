@@ -1,0 +1,9 @@
+http:
+  port: <%= @capd_auth_port %>
+  adminPort: <%= @capd_auth_admin_port %>
+  rootPath: /api/*
+
+memcached:
+  expirationTimeInSeconds: 1800
+  servers: ['127.0.0.1:11211']
+
