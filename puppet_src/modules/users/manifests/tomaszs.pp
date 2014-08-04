@@ -1,9 +1,0 @@
-# Adding user for Tomasz Swiderek
-class users::tomaszs {
-
-  users::account {'tomaszs':
-    fullname => 'Tomasz Swiderek',
-    email    => 'T.Swiderek@kainos.com',
-    ssh_key  => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDhSCuDpG4pxVnJU7C+njfWlvuYjIZ2IDNnUgf1Fnwt/4XuNG00hQKce0RPZm1COGTZXCMd+O13HAHPTQqCb11IGIYSCc0lkwNwZ6b0qlk6Fe4UjI5ZFgDqzBcRU/i22nLeaTzsSDBQ4ydIH+c8h4aVnjyPJ3RBHNy7fPhucSMRsh7P25Sd8xed+JRWiU5AlhvsjM7yffJRhbPLGvnZ4A2xSWu9m5MkYSUOfWnqYZDrsHcRp2gI1j361lih93T4r5K2EB1Wdq3dhoFzp8tEE5E1ye5hjxnme18v5g6MrzvOL6PxXJ6cYk0Uk2pALhl2KmHvOSAx9NR1lm8qaYkUFg0a4skIF4N22hYPOxOa2G11G77V93qwLM8fL8+3GWM4eaFfoT8wYj698xvPXogn5sjrribX+0DvQPLoBD3ljjjF1UKUYR1DVkgyeiyjf1Fpe+1tbV9Vg4BWVbn0G8aORK1FLzCw4gPw8am5Voij68EOqePqU+CfNDCFU2WHT6ihBDkJDZyBeK6AEyVxqyyUcV/wPrFdKDKkGrtL019P0mSO7W6q0VL2JzvwBTRf0xfRMDVAFr+yRknzK1Ic4IBeT005UyoYx5eis8dEVPw0MKiT8SvuWiYD9XTSwozxEZaI3OQIqtd2pOVmUaiDW95K6zq49aWcDYxNp1dSZcHAw1/eEw==',
-  }
-}

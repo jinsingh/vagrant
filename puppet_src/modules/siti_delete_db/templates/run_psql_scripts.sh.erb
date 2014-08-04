@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-cd /opt/siti-delete-db/siti
-sqlplus siti/<%= scope.function_hiera(["abaco-db-siti-password"]) %>@<%= scope.function_hiera(["capd-oracle-auth-sid"]) %> @run_siti.sql
-cd /opt/siti-delete-db/sitiknow
-sqlplus sitiknow/<%= scope.function_hiera(["abaco-db-sitiknow-password"]) %>@<%= scope.function_hiera(["capd-oracle-auth-sid"]) %> @run_sitiknow.sql
-
-/opt/siti-sqlplus/add_siti_superuser.sh

@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-set -xe
-
-# Restore Siti Database Users
-cd /opt/capdoracle/sitiagri
-sqlplus <%= scope.function_hiera(["capd-oracle-sys-username"]) %>/<%= scope.function_hiera(["capd-oracle-password-system"]) %>@<%= scope.function_hiera(["capd-oracle-sid"]) %> @add_users.sql

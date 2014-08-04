@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-sqlplus -s <%= scope.function_hiera(["capd-oracle-sys-username"]) %>/<%= scope.function_hiera(["capd-oracle-password-system"]) %>@<%= scope.function_hiera(["capd-oracle-sid"]) %> <<EOF
-
-GRANT SELECT ON SITI.CONS_WORK TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
-GRANT SELECT ON SITI.PROP_FORMS  TO <%= scope.function_hiera(["capd-oracle-capd-audit-role-name"]) %>;
-
-quit
-EOF

@@ -1,4 +1,0 @@
-database_url = jdbc:oracle:thin:@<%= scope.function_hiera(["caporacledb-ip-host"]) %>:<%= scope.function_hiera(["oracle-port"]) %>/siti
-database_user = siti
-database_password = <%= scope.function_hiera(["abaco-db-siti-password"]) %>
-

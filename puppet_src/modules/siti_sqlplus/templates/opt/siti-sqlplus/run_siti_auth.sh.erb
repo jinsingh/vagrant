@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-set -xe
-
-# Restore Siti Database Users
-cd /opt/siti-sqlplus/auth
-sqlplus siti/<%= @abaco_db_siti_password %>@<%= @capd_oracle_auth_sid %> @run_auth.sql

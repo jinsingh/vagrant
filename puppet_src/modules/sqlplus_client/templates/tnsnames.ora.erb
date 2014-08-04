@@ -1,1 +1,0 @@
-<%= scope.function_hiera(["capd-oracle-sid"]) %>=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=caporacledb)(PORT=<%= scope.function_hiera(["oracle-port"]) %>))(CONNECT_DATA=(SERVICE_NAME=<%= scope.function_hiera(["capd-oracle-sid"]) %>)))

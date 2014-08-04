@@ -1,5 +1,0 @@
-idaTokenServiceBaseUrl: <%= scope.function_hiera(["ida-token-service-url"]) %>
-capServicesBaseUrl: <%= scope.function_hiera(["capd-ha-virtual-ipaddress"]) %>:<%= scope.function_hiera(["capd-services-port"]) %>
-tokenServiceSystemCallerId: -2
-idaTokenServiceUserName: hi
-idaTokenServicePassword: secret
